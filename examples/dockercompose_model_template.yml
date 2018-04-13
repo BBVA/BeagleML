@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+
+  logistic:
+    image: bbvalabs/beagleml-example-logistic:1.0.0@sha256:1580db9c71f4c3f3f5f794f87fd428424b0adb08e84f1e230dfea4a0dc63550d
+    environment:
+      METRICS_KAFKA_SERVICE: 'kafka'
+      METRICS_TOPIC: 'metrics'
+      C: 0.1

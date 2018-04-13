@@ -1,0 +1,125 @@
+{
+  "id": "/beagleml",
+  "groups": [
+    {
+      "id": "/beagleml/mongo",
+      "apps": [
+         {
+           "id": "/beagleml/mongo/mongo",
+           "instances": 1,
+           "container": {
+             "type": "DOCKER",
+             "docker": { "image": "centos/mongodb-32-centos7@sha256:3a6588194d61d03b19401247b82405ef94a417efae0bfc21f67bf517a59b861d" },
+             "portMappings": [{ "containerPort": 27017, "hostPort": 0 }]
+           },
+         "env": {
+           "MONGODB_USER": "userS1H",
+           "MONGODB_PASSWORD": "14tHhw1FjcP42Xiy",
+           "MONGODB_DATABASE": "modeling",
+           "MONGODB_ADMIN_PASSWORD": "14tHhw1FjcP42Xiy"
+         }
+       }
+     ]
+    },{
+      "id": "/beagleml/kafka",
+      "apps": [
+        {
+          "id": "/beagleml/kafka/kafka",
+          "instances": 1,
+          "container": {
+            "type": "DOCKER",
+            "docker": { "image": "spotify/kafka@sha256:cf8f8f760b48a07fb99df24fab8201ec8b647634751e842b67103a25a388981b" },
+            "portMappings": [{ "containerPort": 9092, "hostPort": 0 }]
+          },
+        "env": {
+          "ADVERTISED_PORT": 9092,
+          "ADVERTISED_HOST": "kafka",
+        }
+        }
+      ]
+    },{
+      "id": "/beagleml/rabbitmq",
+      "apps": [
+        {
+          "id": "/beagleml/rabbitmq/rabbitmq",
+          "instances": 1,
+          "container": {
+            "type": "DOCKER",
+            "docker": { "image": "rabbitmq:3@sha256:661c09adce41cb4eee57da29fc22d321cfbbd6a01e572fc6b39195f396194275" },
+            "portMappings": [
+              { "containerPort": 5672, "hostPort": 0 },
+              { "containerPort": 15672, "hostPort": 0 }
+            ]
+          }
+        }
+      ]
+    },{
+      "id": "/beagleml/beagleml-monitor",
+      "dependencies": ["/beagleml/mongo","/beagleml/kafka"],
+      "apps": [
+        {
+          "id": "/beagleml/beagleml-monitor/beagleml-monitor",
+          "instances": 1,
+          "container": {
+            "type": "DOCKER",
+            "docker": {"image": "bbvalabs/beagleml-monitor:1.0.0@sha256:d15cd578b5e35dfefc46ce2c156cca6e8b359e0b4b9fe5a55983b07cf4916abd" }
+          },
+          "env": {
+            "LOG_CONFIG_FILE": "logging.yaml",
+            "MAIN_TOPIC": "scheduler-monitor",
+            "KAFKA_SERVERS": "kafka",
+            "KAFKA_GROUP": "1",
+            "MONGO_URL": "mongo",
+            "MONGODB_DATABASE": "modeling",
+            "MONGODB_USER": "userS1H",
+            "MONGODB_PASSWORD": "14tHhw1FjcP42Xiy",
+            "MONGO_PORT": "27017"
+          }
+        }
+      ]
+    },{
+      "id": "/beagleml/beagleml-scheduler",
+      "dependencies": ["/beagleml/mongo","/beagleml/kafka"],
+      "apps": [
+        {
+          "id": "/beagleml/beagleml-scheduler/beagleml-scheduler",
+          "instances": 1,
+          "container": {
+            "type": "DOCKER",
+            "docker": { "image": "bbvalabs/beagleml-scheduler:1.0.0@sha256:76552edfd23b6cc2851f2594967573e42e96af10f950fd3e6eb0f4497014fa00" },
+            "portMappings": [{ "containerPort": 5000, "hostPort": 0 }]
+          },
+          "env": {
+            "ORCHESTRATOR": "DockerCompose",
+            "ORCHESTRATOR_URL": "http://localhost",
+            "ORCHESTRATOR_TOKEN": "no_token",
+            "KAFKA_SERVERS": "kafka",
+            "MONGODB_URL": "mongo",
+            "MONGODB_PORT": "27017",
+            "MONGODB_DATABASE": "modeling",
+            "MONGODB_USER": "userS1H",
+            "MONGODB_PASSWORD": "14tHhw1FjcP42Xiy"
+          }
+        }
+      ]
+    },{
+      "id": "/beagleml/beagleml-front",
+      "dependencies": ["/beagleml/beagleml-scheduler"],
+      "apps": [
+        {
+          "id": "/beagleml/beagleml-front/beagleml-front",
+          "instances": 1,
+          "container": {
+            "type": "DOCKER",
+            "docker": { "image": "bbvalabs/beagleml-front:1.0.0@sha256:051170b947af1542721756f595d88db1163411930492d37716ac874c6a99e22f" },
+            "portMappings": [{ "containerPort": 8080, "hostPort": 0 }]
+          },
+          "env": {
+            "API": "http://localhost:5000/",
+            "BASE_URL": "/"
+          }
+        }
+      ]
+    }
+  ]
+}

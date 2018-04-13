@@ -1,0 +1,27 @@
+name: 'logistic'                              # name of the project
+template: 'dockercompose_model_template.yml'  # name of the template
+experiment_timeout: 600.0                     # Time out for the experiments
+experiment_accuracy_limit: 0.85
+optimization:
+    type: 'grid'                              # heuristic
+    objectiveFunction: 'experimentTime'       # function to optimize (key in metrics): time / accuracy
+    objectiveResult: 'min'                    # objective of the optimization: min / max
+parameters:
+  - name: 'C'
+    type: 'lineal'
+    value:
+      initial_value: 0.1
+      final_value: 1
+      interval: 0.1
+  - name: 'KAFKA_SERVICE'
+    type: 'absolute'
+    value:
+      - 'kafka'
+  - name: 'METRICS_TOPIC'
+    type: 'absolute'
+    value:
+      - 'metrics'
+  - name: 'ROOT_TOPIC'
+    type: 'absolute'
+    value:
+      - 'logistic'

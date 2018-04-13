@@ -1,0 +1,105 @@
+version: "2"
+
+services:
+  beagleml-front:
+    image: bbvalabs/beagleml-front:1.0.0@sha256:051170b947af1542721756f595d88db1163411930492d37716ac874c6a99e22f
+    environment:
+      - API=http://localhost:5000/ # Don't forguet last '/'
+      - BASE_URL=/
+    networks:
+      - beagleml
+    ports:
+      - "8080:8080"
+
+  beagleml-scheduler:
+    image: bbvalabs/beagleml-scheduler:1.0.0@sha256:76552edfd23b6cc2851f2594967573e42e96af10f950fd3e6eb0f4497014fa00
+    #    image: 809230366679.dkr.ecr.eu-west-1.amazonaws.com/scheduler:0.5.1-47
+    command: ./start.sh
+    environment:
+      - ORCHESTRATOR=DockerCompose
+      - ORCHESTRATOR_URL=http://localhost
+      - ORCHESTRATOR_TOKEN="no_token"
+      - KAFKA_SERVERS=kafka
+      - MONGODB_URL=mongo
+      - MONGODB_PORT=27017
+      - MONGODB_DATABASE=modeling
+      - MONGODB_USER=userS1H
+      - MONGODB_PASSWORD=14tHhw1FjcP42Xiy
+      - CELERY_AMQP_BROKER=rabbitmq
+    networks:
+      - beagleml
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # Mandatory if ORCHESTRATOR=DockerCompose
+    depends_on:
+      - kafka
+      - mongo
+      - rabbitmq
+
+  beagleml-monitor:
+    image: bbvalabs/beagleml-monitor:1.0.0@sha256:d15cd578b5e35dfefc46ce2c156cca6e8b359e0b4b9fe5a55983b07cf4916abd
+    command: ./start.sh
+    environment:
+      - LOG_CONFIG_FILE=logging.yaml
+      - MAIN_TOPIC=scheduler-monitor
+      - KAFKA_SERVERS=kafka
+      - KAFKA_GROUP=1
+      - MONGO_URL=mongo
+      - MONGODB_DATABASE=modeling
+      - MONGODB_USER=userS1H
+      - MONGODB_PASSWORD=14tHhw1FjcP42Xiy
+      - MONGO_PORT=27017
+    networks:
+      - beagleml
+    depends_on:
+      - kafka
+      - mongo
+
+  mongo:
+    image: centos/mongodb-32-centos7@sha256:3a6588194d61d03b19401247b82405ef94a417efae0bfc21f67bf517a59b861d
+    environment:
+      - MONGODB_USER=userS1H
+      - MONGODB_PASSWORD=14tHhw1FjcP42Xiy
+      - MONGODB_DATABASE=modeling
+      - MONGODB_ADMIN_PASSWORD=14tHhw1FjcP42Xiy
+    networks:
+      - beagleml
+    ports:
+      - "27017:27017"
+    volumes:
+      - ${PWD}/mongo_storage:/var/lib/mongodb
+
+  kafka:
+    image: spotify/kafka@sha256:cf8f8f760b48a07fb99df24fab8201ec8b647634751e842b67103a25a388981b
+    environment:
+      - ADVERTISED_PORT=9092
+      - ADVERTISED_HOST=kafka
+    networks:
+      - beagleml
+    ports:
+      - "9092:9092"
+        #      - "2181:2181"
+
+  tensorboard:
+    image: tensorflow/tensorflow:1.3.0
+    command: tensorboard --logdir=/logdir
+    networks:
+      - beagleml
+    ports:
+      - "6006:6006"
+    volumes:
+      - /tmp/demo/results:/logdir
+#      - ${PWD}/results:/logdir
+
+  rabbitmq:
+    image: rabbitmq:3@sha256:661c09adce41cb4eee57da29fc22d321cfbbd6a01e572fc6b39195f396194275
+    networks:
+      - beagleml
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+networks:
+  beagleml:
+    driver: bridge
