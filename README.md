@@ -76,8 +76,6 @@ Both files (```model template``` and ```project definition``` ) must be uploaded
 With these files, the beagleml scheduler generates experiments, each one with a different combination of parameter values, 
 ready to be executed.
 
-To make it easy, in the [beagleml-template repo](https://globaldevtools.bbva.com/bitbucket/projects/BGLAI/repos/automodeling-model-template/browse) 
-it is defined how users (data scientists) can fit their models into beagleml.
 
 ## Releases
 
@@ -86,7 +84,7 @@ BeagleML-1.0.0 is composed by:
 - beagleml-monitor:   ```1.0.0```
 - beagleml-scheduler: ```1.0.0```
 
-+ and, when using DockerCompose:
+and, when using DockerCompose:
  - tensorboard:            ```tensorflow/tensorflow:1.3.0```
 
 
