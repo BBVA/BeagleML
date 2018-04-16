@@ -13,15 +13,3 @@ parameters:
       initial_value: 0.1
       final_value: 1
       interval: 0.1
-  - name: 'KAFKA_SERVICE'
-    type: 'absolute'
-    value:
-      - 'kafka'
-  - name: 'METRICS_TOPIC'
-    type: 'absolute'
-    value:
-      - 'metrics'
-  - name: 'ROOT_TOPIC'
-    type: 'absolute'
-    value:
-      - 'logistic'

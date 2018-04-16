@@ -2,7 +2,7 @@ version: "2"
 
 services:
   beagleml-front:
-    image: bbvalabs/beagleml-front:1.0.0@sha256:051170b947af1542721756f595d88db1163411930492d37716ac874c6a99e22f
+    image: bbvalabs/beagleml-front:1.0.0@sha256:54433a34485caebc6740e9206610eaeb387b3db37f97544c7ec45743213a4c7d
     environment:
       - API=http://localhost:5000/ # Don't forguet last '/'
       - BASE_URL=/
@@ -13,7 +13,6 @@ services:
 
   beagleml-scheduler:
     image: bbvalabs/beagleml-scheduler:1.0.0@sha256:76552edfd23b6cc2851f2594967573e42e96af10f950fd3e6eb0f4497014fa00
-    #    image: 809230366679.dkr.ecr.eu-west-1.amazonaws.com/scheduler:0.5.1-47
     command: ./start.sh
     environment:
       - ORCHESTRATOR=DockerCompose
@@ -79,7 +78,7 @@ services:
       - beagleml
     ports:
       - "9092:9092"
-        #      - "2181:2181"
+      - "2181:2181"
 
   tensorboard:
     image: tensorflow/tensorflow:1.3.0

@@ -111,7 +111,7 @@
           "instances": 1,
           "container": {
             "type": "DOCKER",
-            "docker": { "image": "bbvalabs/beagleml-front:1.0.0@sha256:051170b947af1542721756f595d88db1163411930492d37716ac874c6a99e22f" },
+            "docker": { "image": "bbvalabs/beagleml-front:1.0.0@sha256:54433a34485caebc6740e9206610eaeb387b3db37f97544c7ec45743213a4c7d" },
             "portMappings": [{ "containerPort": 8080, "hostPort": 0 }]
           },
           "env": {
