@@ -3,7 +3,7 @@
 ***1 - Set up the infrastructure:***
 
 ...
-Similar to [local steps](../dockercompose.md)
+Similar to [local steps](dockercompose.md)
 ...
 
 ***1.5 - Create SSH tunnels to remote machine:***
@@ -24,5 +24,5 @@ ssh -L 6006:localhost:6006  <REMOTE_IP>
 ***2 - Upload the model template and the experiment definition.***
 
 ...
-Similar to [local steps](../dockercompose.md)
+Similar to [local steps](dockercompose.md)
 ...
