@@ -4,21 +4,6 @@
 
 - Install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/) in your machine.
 
-- BeagleML docker images are stored in AWS ECR docker registry, so it is mandatory to log in before downloading any image.
-
- In short, follow these steps to
-[configure AWS CLI](http://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-getting-started.html)
-, and then to
-[log in to AWS ECR](http://docs.aws.amazon.com/cli/latest/reference/ecr/get-login.html).
-It should be something like this:
-```
-...
-$ aws configure
-...
-$ aws ecr get-login --region eu-west-1 --no-include-email | bash
-...
-```
-
 ***1 - Set up the infrastructure:***
 
 So...as every container is launched locally, docker-compose takes care of everything.
@@ -29,23 +14,23 @@ $ cd <path>/<to>/<beagleml>/<repo>
 $ cd deploy
 $ docker-compose up -d
 ```
-5 services will be started in order: mongo, kafka, beagleml-monitor, beagleml-scheduer, and finally beagleml-front.
+6 services will be started in order: mongo, kafka, rabbitmq, beagleml-monitor, beagleml-scheduer, and finally beagleml-front.
 Check that these services are up and running by typing ```docker ps```.
 
 Moreover, a network called ```deploy_beagleml``` will be created. All containers will be attached to it.
 
 ***---Common UI steps---***
 
-***2 - Upload the model template and the experiment definition.***
+***2 - Upload the model template and the project definition.***
 
 To access the UI, type ``` http://localhost:8080``` .
 
 Once in the beagleml-front UI, just click ```Add new project``` and click:
--  ```Add Model Template``` to select the ```yml``` experiment definition file of your choice.
-You must have it in your computer (try ```models/dockercompose_model_template_neural-networks.yml```).
+-  ```Add Model Template``` to select the ```yml/json``` project definition file of your choice
+(try ```examples/dockercompose_model_template.yml```).
 
--  ```Add Experiment Definition``` to select the ```yml``` experiment definition file of your choice.
-You must have it in your computer (try ```models/dockercompose_experiment_definition_neural-networks.yml```).
+-  ```Add Project Definition``` to select the ```yml``` project definition file of your choice
+ (try ```examples/dockercompose_project_definition.yml```).
 
 With these files, you are configuring the experiment to be executed in the beagleml system.
 
